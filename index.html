@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="./js/script.js"></script>
+    <title>Mokepon</title>
+</head>
+<body>
+    <h1>MOKEPON 🔥💧🌱</h1>
+
+    <section id="selection-pet">
+        <h2>Choose your pet:</h2>
+
+        <label for="hipodoge">Hipodoge</label>
+        <input type="radio" name="pet" id="hipodoge">
+        <label for="capopepo">Capopepo</label>
+        <input type="radio" name="pet" id="capopepo">
+        <label for="ratigueya">Ratigueya</label>
+        <input type="radio" name="pet" id="ratigueya">
+
+        <!-- Langostelvis -> Water and Fire
+        Tucapalma -> Water and Earth
+        Pydos -> Earth and Fire -->
+
+
+        <button id="button-pet">Select</button>
+
+    </section>
+
+    <section id="selection-attack">
+        <h2>Choose your attack:</h2>
+        <p>Your pet <span id="player-pet"></span> has <span>3</span> lives</p>
+        <p>Your enemy pet <span id="enemy-pet"></span> has <span>3</span> lives</p>
+        <p>
+            <button id="button-fire">Fire 🔥 </button>
+            <button id="button-water">Water 💧 </button>
+            <button id="button-earth">Earth 🌱 </button>
+        </p>
+    </section>
+
+    <section id="messages">
+    </section>
+
+    <section id="retry">
+        <button id="button-retry">RETRY</button>
+    </section>
+</body>
+</html>
