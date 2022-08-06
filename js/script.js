@@ -1,5 +1,7 @@
 let attackPlayer;
 let attackEnemy;
+let livesPlayer = 3;
+let livesEnemy = 3;
 
 function selectPetPlayer(){
     let inputHipodoge = document.getElementById("hipodoge")
@@ -64,16 +66,43 @@ function attackEnemyRandom(){
     } else if (randomAttack==3){
         attackEnemy= "EARTH"
     }
-
-    createMessage();
+    combat();
 }
 
-function createMessage(){
+
+function combat(){
+    if (attackEnemy==attackPlayer) {
+        createMessage("TIE")
+    } else if (attackEnemy=="WATER"){
+        attackPlayer=="EARTH"?createMessage("WIN"):createMessage("LOSE");
+    } else if (attackEnemy=="EARTH"){
+        attackPlayer=="FIRE"?createMessage("WIN"):createMessage("LOSE");
+    } else if (attackEnemy=="FIRE"){
+        attackPlayer=="WATER"?createMessage("WIN"):createMessage("LOSE");
+    }
+}
+
+function restLives(result){
+    let spanLivesPlayer = document.getElementById("lives-player");
+    let spanLivesEnemy = document.getElementById("lives-enemy");
+
+    if (result=="WIN") {
+        livesEnemy--;
+        spanLivesEnemy.innerHTML = livesEnemy;
+    } else if(result=="LOSE") {
+        livesPlayer--;
+        spanLivesPlayer.innerHTML = livesPlayer;
+    }
+
+}
+
+function createMessage(result){
+    restLives(result);
     let messagesSection = document.getElementById("messages");
     let paragraph = document.createElement("p");
     paragraph.innerHTML = `Your pet attack with ${attackPlayer}
     The enemy pet attack with ${attackEnemy}
-    - PENDING`
+    - ${result}`
     messagesSection.appendChild(paragraph);
 }
 

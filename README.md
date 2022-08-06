@@ -1,1 +1,1 @@
-# platzi_p_basica
+# platzi_p_basic
