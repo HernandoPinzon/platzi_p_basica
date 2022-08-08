@@ -2,6 +2,7 @@ let attackPlayer;
 let attackEnemy;
 let livesPlayer = 3;
 let livesEnemy = 3;
+let mokepones = []
 
 const messagesDiv = document.getElementById("result");
 const attackSection = document.getElementById("section-attack");
@@ -23,6 +24,47 @@ const attacksPlayerDiv = document.getElementById("attacks-player");
 const attacksEnemyDiv = document.getElementById("attacks-enemy");
 
 const buttonPet = document.getElementById("button-pet");
+
+class Mokepon {
+    constructor(name, pic, lives){
+        this.name = name;
+        this.pic = pic;
+        this.lives = lives;
+        this.attacks = []
+    }
+}
+
+let hipodoge = new Mokepon('Hipodoge', './assets/hipodoge.png', 4)
+let capipepo = new Mokepon('Capipepo', './assets/capipepo.png', 3)
+let ratigueya = new Mokepon('Ratigueya', './assets/ratigueya.png', 4)
+
+mokepones.push(hipodoge, capipepo, ratigueya);
+
+hipodoge.attacks.push(
+    { name: '💧', id: 'button-water'},
+    { name: '💧', id: 'button-water'},
+    { name: '💧', id: 'button-water'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🌱', id: 'button-earth'},
+)
+
+capipepo.attacks.push(
+    { name: '💧', id: 'button-water'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🌱', id: 'button-earth'},
+    { name: '🌱', id: 'button-earth'},
+    { name: '🌱', id: 'button-earth'},
+)
+
+ratigueya.attacks.push(
+    { name: '💧', id: 'button-water'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🌱', id: 'button-earth'},
+)
+
+
 
 function selectPetPlayer(){
     if (inputHipodoge.checked) {
