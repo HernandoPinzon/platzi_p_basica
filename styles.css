@@ -1,29 +1,8 @@
-.title {
-    color: lightblue;
-    width: 300px;
-    height: 50px;
-    background-color: teal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2&family=Fredoka+One&family=Lobster&display=swap');
 
-.mokepon-card {
-    background-color: tomato;
-    width: 100px;
-    height: 70px;
-    padding: 10px;
-    margin: 10px;
-    border: 1px solid aqua;
-    box-sizing: border-box;
-}
-
-input {
-    display: none;
-}
-
-.select-button {
-    background-color: rgb(81, 148, 81);
-    width: 200px;
-    border: 2px solid rgb(161, 230, 161);
-    height: 40px;
+body {
+    font-family: 'Fredoka One', cursive;
+    background-color: #002B5B;
 }
 
 #selection-pet {
@@ -32,4 +11,117 @@ input {
     justify-content: center;
     align-items: center;
     height: 100vh;
+}
+
+.title {
+    color: white;
+    font-size: 45px;
+}
+
+.subtitle {
+    color: white;
+    font-size: 24px;
+    font-weight: lighter;
+}
+
+.cards-section {
+    display: flex;
+    gap: 10px;
+}
+
+.mokepon-card {
+    background-color: #256D85;
+    width: 170px;
+    height: 90px;
+    padding: 10px;
+    /* margin: 1px; */
+    border: 1px solid aqua;
+    box-sizing: border-box;
+    border-radius: 8px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mokepon-card img {
+    width: 80px;
+}
+
+input {
+    display: none;
+}
+
+input:checked + label {
+    background-color: #1F4690;
+}
+
+
+.select-button {
+    background-color: transparent;
+    width: 200px;
+    border: 2px solid aqua;
+    height: 40px;
+    border-radius: 30px;
+    margin: 20px 0px 0px 0px;
+    color: white;
+    font-family: 'Baloo 2', cursive;
+    font-size: 20px;
+}
+
+#section-attack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+}
+
+.attack-buttons-section {
+    display: flex;
+    align-items: center;
+}
+
+.button {
+    background-color: #256D85;
+    width: 150px;
+    height: 48px;
+    border-radius: 30px;
+    box-sizing: border-box;
+    border: 0;
+    padding: 10px;
+    margin: 0px 8px;
+    font-size: 16px;
+    color: white;
+    font-family: 'Baloo 2', cursive;
+}
+
+#messages {
+    color: white;
+    margin-top: 16px;
+    border-radius: 30px;
+    background-color: #2B4865;
+    width: 180px;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.attack-messages {
+    display: grid;
+    grid-template-columns: 100px 100px;
+    gap: 20px;
+    text-align: center;
+}
+
+@media (max-width: 550px) {
+    .cards-section {
+        flex-direction: column;
+    }
+    .attack-buttons-section {
+        flex-direction: column;
+        gap: 10px;
+    }
+
 }

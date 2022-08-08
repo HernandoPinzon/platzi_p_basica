@@ -3,28 +3,34 @@ let attackEnemy;
 let livesPlayer = 3;
 let livesEnemy = 3;
 
-let spanLivesPlayer
-let spanLivesEnemy
-let messagesSection
-let buttonFire
-let buttonWater
-let buttonEarth
-let buttonRetry
-let attackSection
-let petSection
+const messagesDiv = document.getElementById("result");
+const attackSection = document.getElementById("section-attack");
+const petSection = document.getElementById("selection-pet");
+const spanLivesPlayer = document.getElementById("lives-player");
+const spanLivesEnemy = document.getElementById("lives-enemy");
+const buttonFire = document.getElementById("button-fire")
+const buttonWater = document.getElementById("button-water")
+const buttonEarth = document.getElementById("button-earth")
+const buttonRetry = document.getElementById("button-retry")
+
+const inputHipodoge = document.getElementById("hipodoge")
+const inputCapipepo = document.getElementById("capipepo")
+const inputRatigueya = document.getElementById("ratigueya")
+const spanPetPlayer = document.getElementById("player-pet")
+const spanPetEnemy = document.getElementById("enemy-pet")
+
+const attacksPlayerDiv = document.getElementById("attacks-player");
+const attacksEnemyDiv = document.getElementById("attacks-enemy");
+
+const buttonPet = document.getElementById("button-pet");
 
 function selectPetPlayer(){
-    let inputHipodoge = document.getElementById("hipodoge")
-    let inputCapopepo = document.getElementById("capopepo")
-    let inputRatigueya = document.getElementById("ratigueya")
-    let spanPetPlayer = document.getElementById("player-pet")
-
     if (inputHipodoge.checked) {
         spanPetPlayer.innerHTML = "Hipodoge";
         hideAttackSection(false);
         hidePetSection(true);
-    } else if (inputCapopepo.checked) {
-        spanPetPlayer.innerHTML = "Capopepo";
+    } else if (inputCapipepo.checked) {
+        spanPetPlayer.innerHTML = "Capipepo";
         hideAttackSection(false);
         hidePetSection(true);
     } else if (inputRatigueya.checked) {
@@ -38,23 +44,26 @@ function selectPetPlayer(){
 }
 
 function hideAttackSection(hide){
-    attackSection.hidden = hide;
+    attackSection.style.display = hide?"none":"flex"
+    
 }
 function hideRetrySection(hide){
     buttonRetry.hidden = hide;
+    
 }
 function hidePetSection(hide){
-    petSection.hidden = hide;
+    petSection.style.display = hide?"none":"flex"
+    console.log("hiding select pet")
 }
 
 function selectEnemyPet(){
-    let spanPetEnemy = document.getElementById("enemy-pet")
+    
     let randomPet = random(1,3);
 
     if (randomPet==1) {
         spanPetEnemy.innerHTML = "Hipodoge";
     } else if (randomPet==2){
-        spanPetEnemy.innerHTML = "Capopepo";
+        spanPetEnemy.innerHTML = "Capipepo";
     } else if (randomPet==3){
         spanPetEnemy.innerHTML = "Ratigueya";
     }
@@ -94,7 +103,6 @@ function attackEnemyRandom(){
     combat();
 }
 
-
 function combat(){
     if (attackEnemy==attackPlayer) {
         createMessage("TIE")
@@ -128,7 +136,9 @@ function rebootLives(){
 
 function retryGame(){
     rebootLives();
-    messagesSection.innerHTML = "";
+    messagesDiv.innerHTML = "Good luck";
+    attacksPlayerDiv.innerHTML = "";
+    attacksEnemyDiv.innerHTML = "";
     disabledAttackButtons(false);
     hidePetSection(false);
     hideAttackSection(true);
@@ -154,41 +164,41 @@ function restLives(result){
 }
 
 function createMessage(result){
-    let paragraph = document.createElement("p");
-    paragraph.innerHTML = `Your pet attack with ${attackPlayer}
-    The enemy pet attack with ${attackEnemy}
-    - ${result}`
-    messagesSection.appendChild(paragraph);
+    
+    
+
+    let newPlayerAttack = document.createElement("p");
+    let newEnemyAttack = document.createElement("p");
+    let resultP = document.createElement("p");
+
+    messagesDiv.innerHTML = result;
+    newPlayerAttack.innerHTML = attackPlayer
+    newEnemyAttack.innerHTML = attackEnemy
+
+    attacksPlayerDiv.appendChild(newPlayerAttack);
+    attacksEnemyDiv.appendChild(newEnemyAttack);
     restLives(result);
 }
 
 function createMessageWinner(result){
-    let paragraph = document.createElement("p");
-    paragraph.innerHTML = `You ${result}!!`
-    messagesSection.appendChild(paragraph);
+    
+    messagesDiv.innerHTML = `You ${result}!!`
 }
 
 function startGame(){
-    spanLivesPlayer = document.getElementById("lives-player");
-    spanLivesEnemy = document.getElementById("lives-enemy");
-    messagesSection = document.getElementById("messages");
-    buttonFire = document.getElementById("button-fire")
-    buttonWater = document.getElementById("button-water")
-    buttonEarth = document.getElementById("button-earth")
-    buttonRetry = document.getElementById("button-retry")
+    
     buttonFire.addEventListener("click", attackingPlayer);
     buttonWater.addEventListener("click", attackingPlayer);
     buttonEarth.addEventListener("click", attackingPlayer);
     buttonRetry.addEventListener("click", retryGame);
 
-    attackSection = document.getElementById("selection-attack");
-    petSection = document.getElementById("selection-pet");
+    
     hideRetrySection(true)
     hideAttackSection(true);
 
     
 
-    let buttonPet = document.getElementById("button-pet");
+    
     buttonPet.addEventListener("click", selectPetPlayer);
 }
 
