@@ -21,7 +21,7 @@ const attackSection = document.getElementById("section-attack");
 const petSection = document.getElementById("selection-pet");
 const spanLivesPlayer = document.getElementById("lives-player");
 const spanLivesEnemy = document.getElementById("lives-enemy");
-const buttonRetry = document.getElementById("button-retry")
+const buttonRetry = document.getElementById("button-retry");
 
 const spanPetPlayer = document.getElementById("player-pet")
 const spanPetEnemy = document.getElementById("enemy-pet")
@@ -39,9 +39,9 @@ class Mokepon {
     }
 }
 
-let hipodoge = new Mokepon('Hipodoge', './assets/hipodoge.png', 4)
-let capipepo = new Mokepon('Capipepo', './assets/capipepo.png', 4)
-let ratigueya = new Mokepon('Ratigueya', './assets/ratigueya.png', 4)
+let hipodoge = new Mokepon('Hipodoge', './assets/hipodoge.png', 3)
+let capipepo = new Mokepon('Capipepo', './assets/capipepo.png', 3)
+let ratigueya = new Mokepon('Ratigueya', './assets/ratigueya.png', 3)
 hipodoge.attacks.push(
     { name: '💧', id: 'button-water'},
     { name: '💧', id: 'button-water'},
@@ -132,8 +132,8 @@ function selectEnemyPet(){
     spanPetEnemy.innerHTML = mokepones[randomPet].name;
     selectedMokeponEnemy = mokepones[randomPet]
     livesEnemy = selectedMokeponEnemy.lives;
-    spanLivesEnemy.innerHTML = livesEnemy;
-    spanLivesPlayer.innerHTML = livesPlayer;
+    spanLivesEnemy.innerHTML = '💝'.repeat(livesEnemy);
+    spanLivesPlayer.innerHTML = '💝'.repeat(livesPlayer);
 
 }
 
@@ -151,6 +151,7 @@ function attackingPlayer(event){
         attackPlayer = "EARTH";
     }
     this.style.background = '#112f58'
+    this.disabled = true
     historyAttacksPlayer.push(attackPlayer);
     attackEnemyRandom();
 }
@@ -194,8 +195,8 @@ function combat(){
 }
 
 function checkLives(){
-    spanLivesEnemy.innerHTML = livesEnemy;
-    spanLivesPlayer.innerHTML = livesPlayer;
+    spanLivesEnemy.innerHTML = '💝'.repeat(livesEnemy<0?0:livesEnemy)+" ";
+    spanLivesPlayer.innerHTML = '💝'.repeat(livesPlayer<0?0:livesPlayer)+" ";
     disabledAttackButtons(true);
     hideRetrySection(false);
     if(livesEnemy<livesPlayer){
@@ -209,15 +210,8 @@ function checkLives(){
     historyAttacksEnemy = []
 }
 
-function rebootLives(){
-    livesEnemy=3;
-    livesPlayer=3;
-    spanLivesEnemy.innerHTML = livesEnemy;
-    spanLivesPlayer.innerHTML = livesPlayer;
-}
 
 function retryGame(){
-    rebootLives();
     messagesDiv.innerHTML = "Good luck";
     attacksPlayerDiv.innerHTML = "";
     attacksEnemyDiv.innerHTML = "";
@@ -230,17 +224,6 @@ function retryGame(){
 function disabledAttackButtons(enable){
     attacksButtons.forEach(button => button.disabled=enable)
 
-}
-
-function restLives(result){
-    if (result=="WIN") {
-        livesEnemy--;
-        spanLivesEnemy.innerHTML = livesEnemy;
-    } else if(result=="LOSE") {
-        livesPlayer--;
-        spanLivesPlayer.innerHTML = livesPlayer;
-    }
-    checkLives();
 }
 
 function createMessage(playerAttack, enemyAttack){

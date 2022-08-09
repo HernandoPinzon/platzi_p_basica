@@ -85,7 +85,7 @@ input:checked + label {
 
 .button {
     background-color: #256D85;
-    width: 150px;
+    width: 120px;
     height: 48px;
     border-radius: 30px;
     box-sizing: border-box;
@@ -119,6 +119,10 @@ input:checked + label {
     grid-template-columns: 100px 100px;
     gap: 20px;
     text-align: center;
+}
+
+.name-and-lives {
+    height: 50px;
 }
 
 @media (max-width: 550px) {
