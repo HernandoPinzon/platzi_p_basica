@@ -13,6 +13,14 @@ let historyAttacksPlayer = []
 let historyAttacksEnemy = []
 let selectedMokeponEnemy
 let selectedMokeponPlayer
+let interval
+let backgroundMap = new Image()
+backgroundMap.src = './assets/mokemap.png'
+let selectPetPlayerCollide= false
+const maxWidth = 350
+const windowWidth = window.innerWidth -20>maxWidth?maxWidth:window.innerWidth -20;
+const heightWanted = windowWidth *600/800
+
 
 const messagesDiv = document.getElementById("result");
 const cardsContainer = document.getElementById("cards-container");
@@ -27,21 +35,98 @@ const spanPetPlayer = document.getElementById("player-pet")
 const spanPetEnemy = document.getElementById("enemy-pet")
 const attacksPlayerDiv = document.getElementById("attacks-player");
 const attacksEnemyDiv = document.getElementById("attacks-enemy");
+const mapSection = document.getElementById("show-map");
+const map = document.getElementById("map");
+const canvas = map.getContext("2d");
 
 const buttonPet = document.getElementById("button-pet");
 
 class Mokepon {
-    constructor(name, pic, lives){
+    constructor(name, pic, lives, picHead){
         this.name = name;
         this.pic = pic;
         this.lives = lives;
         this.attacks = []
+        this.width=40
+        this.height=40
+        this.x=random(40,windowWidth -this.width)
+        this.y=random(40,heightWanted -this.height)
+        this.canvasImage=new Image();
+        this.canvasImage.src = picHead;
+        this.velocityX = 0;
+        this.velocityY = 0;
+        this.dead=false;
+    }
+    drawInCanvas(canvas){
+        if (!this.dead) {
+            canvas.drawImage(
+                this.canvasImage,
+                this.x,
+                this.y,
+                this.width,
+                this.height
+            )
+        }
+    }
+    inCollision(box){
+        if (box.dead) {
+            console.log("no collision cause dead")
+            return false
+        }
+        let myTop=this.y
+        let myButton=this.y+this.height
+        let myLeft=this.x
+        let myRight=this.x+this.width
+        let boxTop=box.y
+        let boxButton=box.y+box.height
+        let boxLeft=box.x
+        let boxRight=box.x+box.width
+
+        if (
+            myButton<boxTop || myTop>boxButton || myRight<boxLeft || myLeft>boxRight
+        ) {
+            return false
+        }
+        return true
     }
 }
 
-let hipodoge = new Mokepon('Hipodoge', './assets/hipodoge.png', 3)
-let capipepo = new Mokepon('Capipepo', './assets/capipepo.png', 3)
-let ratigueya = new Mokepon('Ratigueya', './assets/ratigueya.png', 3)
+let hipodoge = new Mokepon(
+    'Hipodoge', 
+    './assets/hipodoge.png', 
+    3, 
+    './assets/hipodogehead.png'
+)
+let capipepo = new Mokepon(
+    'Capipepo', 
+    './assets/capipepo.png', 
+    3, 
+    './assets/capipepohead.png'
+)
+let ratigueya = new Mokepon(
+    'Ratigueya', 
+    './assets/ratigueya.png', 
+    3,
+    './assets/ratigueyahead.png'
+)
+let hipodogeEnemy = new Mokepon(
+    'Hipodoge', 
+    './assets/hipodoge.png', 
+    3, 
+    './assets/hipodogehead.png',
+)
+let capipepoEnemy = new Mokepon(
+    'Capipepo', 
+    './assets/capipepo.png', 
+    3, 
+    './assets/capipepohead.png',
+)
+let ratigueyaEnemy = new Mokepon(
+    'Ratigueya', 
+    './assets/ratigueya.png', 
+    3,
+    './assets/ratigueyahead.png',
+)
 hipodoge.attacks.push(
     { name: '💧', id: 'button-water'},
     { name: '💧', id: 'button-water'},
@@ -62,34 +147,142 @@ ratigueya.attacks.push(
     { name: '🔥', id: 'button-fire'},
     { name: '🔥', id: 'button-fire'},
     { name: '🌱', id: 'button-earth'},
+)
+hipodogeEnemy.attacks.push(
+    { name: '💧', id: 'button-water'},
+    { name: '💧', id: 'button-water'},
+    { name: '💧', id: 'button-water'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🌱', id: 'button-earth'},
+)
+capipepoEnemy.attacks.push(
+    { name: '💧', id: 'button-water'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🌱', id: 'button-earth'},
+    { name: '🌱', id: 'button-earth'},
+    { name: '🌱', id: 'button-earth'},
+) 
+ratigueyaEnemy.attacks.push(
+    { name: '💧', id: 'button-water'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🌱', id: 'button-earth'},
 )  
 mokepones.push(hipodoge, capipepo, ratigueya);
 
-
-
 function selectPetPlayer(){
-    if (inputHipodoge.checked) {
-        spanPetPlayer.innerHTML = inputHipodoge.id
-        hideAttackSection(false);
+    if (inputHipodoge.checked || inputCapipepo.checked || inputRatigueya.checked) {
+        if (inputHipodoge.checked) {
+            spanPetPlayer.innerHTML = inputHipodoge.id
+        } else if (inputCapipepo.checked) {
+            spanPetPlayer.innerHTML = inputCapipepo.id
+        } else if (inputRatigueya.checked) {
+            spanPetPlayer.innerHTML = inputRatigueya.id
+        }
+        hideMapSection(false);
+        //hideAttackSection(false);
         hidePetSection(true);
-    } else if (inputCapipepo.checked) {
-        spanPetPlayer.innerHTML = inputCapipepo.id
-        hideAttackSection(false);
-        hidePetSection(true);
-    } else if (inputRatigueya.checked) {
-        spanPetPlayer.innerHTML = inputCapipepo.id
-        hideAttackSection(false);
-        hidePetSection(true);
+        selectedMokeponPlayer = mokepones
+            .find((mokepon)=>spanPetPlayer.innerHTML==mokepon.name)
+        livesPlayer=selectedMokeponPlayer?.lives;
+        
+        spanLivesPlayer.innerHTML = '💝'.repeat(livesPlayer);
+        startMap()
+        generateAttackButtons();
     } else {
         alert("you didn't select any pet");
     }
-    selectedMokeponPlayer = mokepones
-        .find((mokepon)=>spanPetPlayer.innerHTML==mokepon.name)
-    livesPlayer=selectedMokeponPlayer.lives;
-    selectEnemyPet();
-    generateAttackButtons();
+    
+}
+function startMap(){
+    map.width=windowWidth
+    map.height=heightWanted
+    selectedMokeponPlayer.x=10
+    selectedMokeponPlayer.y=10
+    window.addEventListener("keydown", keyPress);
+    window.addEventListener("keyup", keyUp)
+    drawCanvas();
+    interval = setInterval(drawCanvas,50)
+}
+function drawCanvas(){
+    selectedMokeponPlayer.x +=selectedMokeponPlayer.velocityX
+    selectedMokeponPlayer.y +=selectedMokeponPlayer.velocityY
+    canvas.clearRect(0,0, map.width, map.height);
+    canvas.drawImage(
+        backgroundMap,
+        0,
+        0,
+        map.width,
+        map.height
+    )
+    ratigueyaEnemy.drawInCanvas(canvas)
+    capipepoEnemy.drawInCanvas(canvas)
+    hipodogeEnemy.drawInCanvas(canvas)
+    selectedMokeponPlayer.drawInCanvas(canvas)
+    if(
+        (selectedMokeponPlayer.inCollision(ratigueyaEnemy) ||
+        selectedMokeponPlayer.inCollision(capipepoEnemy) ||
+        selectedMokeponPlayer.inCollision(hipodogeEnemy)) && 
+        (selectedMokeponPlayer.velocityX!==0 ||
+        selectedMokeponPlayer.velocityY!==0) &&
+        selectPetPlayerCollide === false
+    ){
+        selectedMokeponPlayer.inCollision(ratigueyaEnemy)?
+        selectedMokeponEnemy=ratigueyaEnemy:undefined
+        selectedMokeponPlayer.inCollision(capipepoEnemy)?
+        selectedMokeponEnemy=capipepoEnemy:undefined
+        selectedMokeponPlayer.inCollision(hipodogeEnemy)?
+        selectedMokeponEnemy=hipodogeEnemy:undefined
+        livesEnemy = selectedMokeponEnemy.lives;
+        spanPetEnemy.innerHTML = selectedMokeponEnemy.name;
+        spanLivesEnemy.innerHTML = '💝'.repeat(livesEnemy);
+        selectPetPlayerCollide = true
+        console.log("collide",selectPetPlayerCollide)
+        selectedMokeponPlayer.velocityX=0
+        selectedMokeponPlayer.velocityY=0
+        clearInterval(interval)
+        hideMapSection(true);
+        hideAttackSection(false);
+    } else if (
+        (!selectedMokeponPlayer.inCollision(ratigueyaEnemy) &&
+        !selectedMokeponPlayer.inCollision(capipepoEnemy) &&
+        !selectedMokeponPlayer.inCollision(hipodogeEnemy)) && 
+        (selectedMokeponPlayer.velocityX!==0 ||
+        selectedMokeponPlayer.velocityY!==0)&&
+        selectPetPlayerCollide === true
+        
+    ) {
+        console.log("notCollide",selectPetPlayerCollide)
+        selectPetPlayerCollide = false
+    }
+
 }
 
+function movePetLeft(){
+    selectedMokeponPlayer.velocityX =-5
+}
+function movePetRight(){
+    selectedMokeponPlayer.velocityX =5
+}
+function movePetUp(){
+    selectedMokeponPlayer.velocityY =-5
+}
+function movePetDown(){
+    selectedMokeponPlayer.velocityY =5
+}
+function stopMoveLeft(){
+    selectedMokeponPlayer.velocityX =0
+}
+function stopMoveRight(){
+    selectedMokeponPlayer.velocityX =0
+}
+function stopMoveUp(){
+    selectedMokeponPlayer.velocityY =0
+}
+function stopMoveDown(){
+    selectedMokeponPlayer.velocityY =0
+}
 function generateAttackButtons(){
     selectedMokeponPlayer?.attacks.forEach( (attack)=> {
         mokeponesAttacks += `
@@ -126,16 +319,10 @@ function hidePetSection(hide){
     petSection.style.display = hide?"none":"flex"
 }
 
-function selectEnemyPet(){
-    
-    let randomPet = random(0,mokepones.length-1);
-    spanPetEnemy.innerHTML = mokepones[randomPet].name;
-    selectedMokeponEnemy = mokepones[randomPet]
-    livesEnemy = selectedMokeponEnemy.lives;
-    spanLivesEnemy.innerHTML = '💝'.repeat(livesEnemy);
-    spanLivesPlayer.innerHTML = '💝'.repeat(livesPlayer);
-
+function hideMapSection(hide){
+    mapSection.style.display = hide?"none":"flex"
 }
+
 
 function random(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -200,16 +387,20 @@ function checkLives(){
     disabledAttackButtons(true);
     hideRetrySection(false);
     if(livesEnemy<livesPlayer){
+        selectedMokeponEnemy.dead=true;
         createMessageWinner("WIN")
     } else if (livesPlayer<livesEnemy){
+        selectedMokeponPlayer.x=10
+        selectedMokeponPlayer.y=10
         createMessageWinner("LOSE")
     } else if (livesPlayer==livesEnemy) {
+        selectedMokeponPlayer.x=10
+        selectedMokeponPlayer.y=10
         createMessageWinner("TIE")
     }
     historyAttacksPlayer = []
     historyAttacksEnemy = []
 }
-
 
 function retryGame(){
     messagesDiv.innerHTML = "Good luck";
@@ -247,6 +438,7 @@ function startGame(){
     buttonRetry.addEventListener("click", retryGame);
     hideRetrySection(true)
     hideAttackSection(true);
+    hideMapSection(true);
     mokepones.forEach( (mokepon)=> {
         mokeponesOptions += `
             <input type="radio" name="pet" id="${mokepon.name}">
@@ -270,5 +462,37 @@ function startGame(){
     buttonPet.addEventListener("click", selectPetPlayer);
 }
 
+function keyPress(event){
+    switch (event.key) {
+        case "ArrowUp":
+            movePetUp()
+            break;
+        case "ArrowDown":
+            movePetDown()
+            break;
+        case "ArrowLeft":
+            movePetLeft()
+            break;
+        case "ArrowRight":
+            movePetRight()
+            break;
+    }
+}
+function keyUp(event){
+    switch (event.key) {
+        case "ArrowUp":
+            stopMoveUp()
+            break;
+        case "ArrowDown":
+            stopMoveDown()
+            break;
+        case "ArrowLeft":
+            stopMoveLeft()
+            break;
+        case "ArrowRight":
+            stopMoveRight()
+            break;
+    }
+}
 
 window.addEventListener("load", startGame);
