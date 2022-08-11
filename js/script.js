@@ -2,6 +2,7 @@ let attackPlayer;
 let attackEnemy;
 let livesPlayer;
 let livesEnemy;
+let playerId;
 let mokepones = []
 let mokeponesOptions = ''
 let mokeponesAttacks = ''
@@ -186,7 +187,7 @@ function selectPetPlayer(){
         selectedMokeponPlayer = mokepones
             .find((mokepon)=>spanPetPlayer.innerHTML==mokepon.name)
         livesPlayer=selectedMokeponPlayer?.lives;
-        
+        postSelectedPet()
         spanLivesPlayer.innerHTML = '💝'.repeat(livesPlayer);
         startMap()
         generateAttackButtons();
@@ -195,6 +196,42 @@ function selectPetPlayer(){
     }
     
 }
+
+function postSelectedPet(){
+    fetch(
+        `http://localhost:8080/mokepon/${playerId}`,
+        {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(
+                {
+                    mokepon: selectedMokeponPlayer.name
+                }
+            )
+        }
+        )
+}
+
+function postPositionPet(x,y){
+    fetch(
+        `http://localhost:8080/mokepon/${playerId}/position`,
+        {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(
+                {
+                    positionX: x,
+                    positionY: y
+                }
+            )
+        }
+        )
+}
+
 function startMap(){
     map.width=windowWidth
     map.height=heightWanted
@@ -216,6 +253,8 @@ function drawCanvas(){
         map.width,
         map.height
     )
+
+    postPositionPet(selectedMokeponPlayer.x,selectedMokeponPlayer.y)
     ratigueyaEnemy.drawInCanvas(canvas)
     capipepoEnemy.drawInCanvas(canvas)
     hipodogeEnemy.drawInCanvas(canvas)
@@ -322,7 +361,6 @@ function hidePetSection(hide){
 function hideMapSection(hide){
     mapSection.style.display = hide?"none":"flex"
 }
-
 
 function random(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -460,6 +498,19 @@ function startGame(){
 
     
     buttonPet.addEventListener("click", selectPetPlayer);
+    joinGame();
+}
+
+function joinGame(){
+    fetch("http://localhost:8080/join")
+        .then( function(response){
+            console.log(response)
+            if (response.ok) {
+                response.text().then(function(response){
+                    playerId=response
+                })
+            }
+        })
 }
 
 function keyPress(event){
