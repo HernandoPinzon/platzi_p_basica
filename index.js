@@ -22,13 +22,23 @@ class Player{
         this.y=y
     }
 }
-
 class Mokepon{
     constructor(name){
         this.name=name
-
     }
 }
+
+let player1 = new Player('1')
+let player2 = new Player('2')
+players.push(player1,player2)
+player1.assignMokepon(new Mokepon('Ratigueya'))
+player2.assignMokepon(new Mokepon('Capipepo'))
+player1.x=60
+player2.x=100
+player1.y=60
+player2.y=100
+
+
 
 function random(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -77,7 +87,12 @@ app.post(
         }
         console.clear()
         console.log(players[indexPlayer])
-        response.end()
+        const othersPlayers = players.filter((player)=>player.id!=playerId)
+        console.log(othersPlayers)
+        response.send({
+            //same that "othersPlayers: othersPlayers"
+            othersPlayers
+        })
     })
 
 

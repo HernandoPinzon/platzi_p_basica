@@ -4,6 +4,7 @@ let livesPlayer;
 let livesEnemy;
 let playerId;
 let mokepones = []
+let mokeponesEnemyList = []
 let mokeponesOptions = ''
 let mokeponesAttacks = ''
 let inputHipodoge
@@ -39,11 +40,33 @@ const attacksEnemyDiv = document.getElementById("attacks-enemy");
 const mapSection = document.getElementById("show-map");
 const map = document.getElementById("map");
 const canvas = map.getContext("2d");
-
 const buttonPet = document.getElementById("button-pet");
 
+const HIPODOGE_ATTACKS = [
+    { name: '💧', id: 'button-water'},
+    { name: '💧', id: 'button-water'},
+    { name: '💧', id: 'button-water'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🌱', id: 'button-earth'}
+]
+const CAPIPEPO_ATTACKS = [
+    { name: '💧', id: 'button-water'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🌱', id: 'button-earth'},
+    { name: '🌱', id: 'button-earth'},
+    { name: '🌱', id: 'button-earth'},
+]
+const RATIGUEYA_ATTACKS = [
+    { name: '💧', id: 'button-water'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🔥', id: 'button-fire'},
+    { name: '🌱', id: 'button-earth'},
+]
+
 class Mokepon {
-    constructor(name, pic, lives, picHead){
+    constructor(name, pic, lives, picHead, playerId=null){
+        this.playerId=playerId
         this.name = name;
         this.pic = pic;
         this.lives = lives;
@@ -110,66 +133,10 @@ let ratigueya = new Mokepon(
     3,
     './assets/ratigueyahead.png'
 )
-let hipodogeEnemy = new Mokepon(
-    'Hipodoge', 
-    './assets/hipodoge.png', 
-    3, 
-    './assets/hipodogehead.png',
-)
-let capipepoEnemy = new Mokepon(
-    'Capipepo', 
-    './assets/capipepo.png', 
-    3, 
-    './assets/capipepohead.png',
-)
-let ratigueyaEnemy = new Mokepon(
-    'Ratigueya', 
-    './assets/ratigueya.png', 
-    3,
-    './assets/ratigueyahead.png',
-)
-hipodoge.attacks.push(
-    { name: '💧', id: 'button-water'},
-    { name: '💧', id: 'button-water'},
-    { name: '💧', id: 'button-water'},
-    { name: '🔥', id: 'button-fire'},
-    { name: '🌱', id: 'button-earth'},
-)
-capipepo.attacks.push(
-    { name: '💧', id: 'button-water'},
-    { name: '🔥', id: 'button-fire'},
-    { name: '🌱', id: 'button-earth'},
-    { name: '🌱', id: 'button-earth'},
-    { name: '🌱', id: 'button-earth'},
-) 
-ratigueya.attacks.push(
-    { name: '💧', id: 'button-water'},
-    { name: '🔥', id: 'button-fire'},
-    { name: '🔥', id: 'button-fire'},
-    { name: '🔥', id: 'button-fire'},
-    { name: '🌱', id: 'button-earth'},
-)
-hipodogeEnemy.attacks.push(
-    { name: '💧', id: 'button-water'},
-    { name: '💧', id: 'button-water'},
-    { name: '💧', id: 'button-water'},
-    { name: '🔥', id: 'button-fire'},
-    { name: '🌱', id: 'button-earth'},
-)
-capipepoEnemy.attacks.push(
-    { name: '💧', id: 'button-water'},
-    { name: '🔥', id: 'button-fire'},
-    { name: '🌱', id: 'button-earth'},
-    { name: '🌱', id: 'button-earth'},
-    { name: '🌱', id: 'button-earth'},
-) 
-ratigueyaEnemy.attacks.push(
-    { name: '💧', id: 'button-water'},
-    { name: '🔥', id: 'button-fire'},
-    { name: '🔥', id: 'button-fire'},
-    { name: '🔥', id: 'button-fire'},
-    { name: '🌱', id: 'button-earth'},
-)  
+
+hipodoge.attacks.push(...HIPODOGE_ATTACKS)
+capipepo.attacks.push(...CAPIPEPO_ATTACKS) 
+ratigueya.attacks.push(...RATIGUEYA_ATTACKS)
 mokepones.push(hipodoge, capipepo, ratigueya);
 
 function selectPetPlayer(){
@@ -229,7 +196,47 @@ function postPositionPet(x,y){
                 }
             )
         }
-        )
+    ).then(function (response){
+        if (response.ok) {
+            //to obtain the variable inside the response "response.othersPlayers"
+            response.json().then(function({othersPlayers}){
+                console.clear()
+                console.log(othersPlayers)
+                othersPlayers.forEach(function(enemy){
+                    const mokeponName = enemy.mokepon.name || ""
+                    let mokeponEnemy
+                    if (mokeponName=="Hipodoge") {
+                        mokeponEnemy = new Mokepon(
+                            'Hipodoge', 
+                            './assets/hipodoge.png', 
+                            3, 
+                            './assets/hipodogehead.png'
+                        )
+                        
+                    } else if(mokeponName=="Capipepo") {
+                        mokeponEnemy = new Mokepon(
+                            'Capipepo', 
+                            './assets/capipepo.png', 
+                            3, 
+                            './assets/capipepohead.png'
+                        )
+                    } else if(mokeponName=="Ratigueya"){
+                        mokeponEnemy = new Mokepon(
+                            'Ratigueya', 
+                            './assets/ratigueya.png', 
+                            3,
+                            './assets/ratigueyahead.png'
+                        )
+                    }
+
+                    mokeponEnemy.x = enemy.x
+                    mokeponEnemy.y = enemy.y
+                    mokeponesEnemyList.push(mokeponEnemy)
+
+                })
+            })
+        }
+    })
 }
 
 function startMap(){
@@ -255,9 +262,9 @@ function drawCanvas(){
     )
 
     postPositionPet(selectedMokeponPlayer.x,selectedMokeponPlayer.y)
-    ratigueyaEnemy.drawInCanvas(canvas)
-    capipepoEnemy.drawInCanvas(canvas)
-    hipodogeEnemy.drawInCanvas(canvas)
+    mokeponesEnemyList.forEach(function(mokepon){
+        mokepon.drawInCanvas(canvas)
+    })
     selectedMokeponPlayer.drawInCanvas(canvas)
     if(
         (selectedMokeponPlayer.inCollision(ratigueyaEnemy) ||
@@ -280,9 +287,9 @@ function drawCanvas(){
         console.log("collide",selectPetPlayerCollide)
         selectedMokeponPlayer.velocityX=0
         selectedMokeponPlayer.velocityY=0
-        clearInterval(interval)
-        hideMapSection(true);
-        hideAttackSection(false);
+        //clearInterval(interval)
+        //hideMapSection(true);
+        //hideAttackSection(false);
     } else if (
         (!selectedMokeponPlayer.inCollision(ratigueyaEnemy) &&
         !selectedMokeponPlayer.inCollision(capipepoEnemy) &&
