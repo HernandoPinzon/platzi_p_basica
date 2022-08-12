@@ -28,11 +28,27 @@
     <section id="show-map">
         <h2 class="subtitle">Tour the map with your pet</h2>
         <canvas id="map"></canvas>
-        <button class="map-button" onmouseup="stopMoveUp()" onmousedown="movePetUp()">Up</button>
+        <button 
+        class="map-button" 
+        onmouseup="stopMoveUp()" onmousedown="movePetUp()"
+        ontouchend="stopMoveUp()" ontouchstart="movePetUp()"
+        >Up</button>
         <div id="buttons-movement">
-            <button class="map-button" onmouseup="stopMoveLeft()" onmousedown="movePetLeft()">Left</button>
-            <button class="map-button" onmouseup="stopMoveDown()" onmousedown="movePetDown()">Down</button>
-            <button class="map-button" onmouseup="stopMoveRight()" onmousedown="movePetRight()">Right</button>
+            <button 
+            class="map-button" 
+            onmouseup="stopMoveLeft()" onmousedown="movePetLeft()" 
+            ontouchend="stopMoveLeft()" ontouchstart="movePetLeft()" 
+            >Left</button>
+            <button 
+            class="map-button" 
+            onmouseup="stopMoveDown()" onmousedown="movePetDown()"
+            ontouchend="stopMoveDown()" ontouchstart="movePetDown()"
+            >Down</button>
+            <button 
+            class="map-button" 
+            onmouseup="stopMoveRight()" onmousedown="movePetRight()"
+            ontouchend="stopMoveRight()" ontouchstart="movePetRight()"
+            >Right</button>
         </div>
     </section>
 

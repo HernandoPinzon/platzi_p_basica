@@ -1,9 +1,9 @@
 const express = require("express")
 const cors = require("cors")
-const { request } = require("http")
-const { response } = require("express")
-
 const app = express()
+
+
+app.use(express.static('public'))
 app.use(cors())
 app.use(express.json())
 
@@ -11,6 +11,7 @@ const players = []
 class Player{
     constructor(id){
         this.id=id
+        this.attacks=[]
     }
 
     assignMokepon(mokepon){
@@ -21,24 +22,16 @@ class Player{
         this.x=x
         this.y=y
     }
+
+    assignAttacks(attacks){
+        this.attacks=attacks
+    }
 }
 class Mokepon{
     constructor(name){
         this.name=name
     }
 }
-
-let player1 = new Player('1')
-let player2 = new Player('2')
-players.push(player1,player2)
-player1.assignMokepon(new Mokepon('Ratigueya'))
-player2.assignMokepon(new Mokepon('Capipepo'))
-player1.x=60
-player2.x=100
-player1.y=60
-player2.y=100
-
-
 
 function random(min, max){
     return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -64,11 +57,11 @@ app.post(
         const indexPlayer = players.findIndex(
             (player)=>playerId==player.id
         )
-        console.log(playerId)
+        
         if (indexPlayer>=0) {
             players[indexPlayer].assignMokepon(mokepon)
         }
-        console.log(players)
+        
         response.end()
     })
 
@@ -85,13 +78,36 @@ app.post(
         if (indexPlayer>=0) {
             players[indexPlayer].updatePosition(positionX,positionY)
         }
-        console.clear()
-        console.log(players[indexPlayer])
         const othersPlayers = players.filter((player)=>player.id!=playerId)
-        console.log(othersPlayers)
         response.send({
             //same that "othersPlayers: othersPlayers"
             othersPlayers
+        })
+    })
+
+app.post(
+    "/mokepon/:playerId/attacks",
+    (request,response)=>{
+        const playerId = request.params.playerId || ""
+        const attacks = request.body.attacks || []
+        const indexPlayer = players.findIndex(
+            (player)=>playerId==player.id
+        )
+        console.log(attacks)
+        if (indexPlayer>=0) {
+            players[indexPlayer].assignAttacks(attacks)
+        }
+        response.end()
+    })
+
+app.get(
+    "/mokepon/:enemyId/attacks",
+    (request,response)=>{
+        const enemyId = request.params.enemyId || ""
+        const enemy = players.find((player)=>enemyId==player.id)
+        console.log(enemyId,enemy)
+        response.send({
+            attacks: enemy.attacks || []
         })
     })
 
